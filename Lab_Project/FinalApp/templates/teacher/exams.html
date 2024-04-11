@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exams</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 18px;
+            margin: 2%;
+        }
+
+        .hidden-row {
+            display: none;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .details-table th,
+        .details-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .details-table th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 align="center">Teacher Exams Page</h1>
+
+    <table id="Course" class="crud-table table table-striped">
+        <thead>
+            <tr>
+                <th>Exam Name</th>
+                <th>Total Marks</th>
+                <th>Exam Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for title in exam_titles %}
+            <tr class="exam-row">
+                <td>{{ title.exam_name }}</td>
+                <td>{{ title.total_marks }}</td>
+                <td>{{ title.date_of_exam }}</td>
+                <td>
+                    <div style="display: inline-block;">
+                        <form action="{% url 'delete_exam' title.exam_name %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                    <div style="display: inline-block;">
+                        <button class="expand-button btn btn-primary">Expand</button>
+                    </div>
+                </td>
+            </tr>
+            <tr class="hidden-row">
+                <td colspan="5">
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>Student Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for exam in exams %}
+                            {% if exam.exam_name == title.exam_name %}
+                            <tr>
+                                <td>{{ exam.student_name }}</td>
+                                <td>{{ exam.student_id }}</td>
+                                <td>{{ exam.student_marks }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary" onclick="showExamForm()">Add Exam</button>
+    <br><br>
+    <div id="examForm" style="display: none;">
+        <form name="exam" action="{% url 'exams_page' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="exam">
+            <input type="text" name="exam_name" placeholder="Exam Name">
+            <input type="number" name="total_marks" placeholder="Total Marks">
+            <input type="date" name="date_of_exam" placeholder="Exam Date">
+            <button type="submit">Create</button>
+        </form>
+    </div>
+
+    <br><br>
+    <a href="{% url 'teacher_home' %}" class="btn btn-primary"><button class="btn btn-primary">Go Back
+                Home</button></a>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script>
+        function showExamForm() {
+            ele=document.getElementById("examForm")
+            
+            if(ele.style.display=="block")
+                ele.style.display="none";
+            else if(ele.style.display=="none")
+                ele.style.display="block"
+        }
+
+        document.querySelectorAll('.expand-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const row = this.closest('.exam-row').nextElementSibling;
+                row.classList.toggle('hidden-row');
+            });
+        });
+    </script>
+</body>
+
+</html>

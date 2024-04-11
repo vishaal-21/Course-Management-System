@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            margin: 2%;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 18px;
+        }
+
+        .hidden-row {
+            display: none;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .details-table th,
+        .details-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .details-table th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 align="center">Teacher Assignments Page</h1>
+
+    <table id="Course" class="crud-table table table-striped">
+        <thead>
+            <tr>
+                <th>Number</th>
+                <th>Assignment Name</th>
+                <th>Total Marks</th>
+                <th>Upload Date</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for title in assignment_titles %}
+            <tr class="assignment-row">
+                <td>{{ title.assignment_number }}</td>
+                <td>{{ title.assignment_name }}</td>
+                <td>{{ title.total_marks }}</td>
+                <td>{{ title.upload_date }}</td>
+                <td>{{ title.due_date }}</td>
+                <td>
+                    <div style="display: inline-block;">
+                        <form action="{% url 'delete_assignment' title.assignment_number %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                    <div style="display: inline-block;">
+                        <button class="expand-button btn btn-primary">Expand</button>
+                    </div>
+                </td>
+            </tr>
+            <!-- Hidden row containing details table -->
+            <tr class="hidden-row">
+                <td colspan="6">
+                    <table class="details-table">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Student ID</th>
+                                <th>Student Marks</th>
+                                <th>Submission Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for assignment in assignments %}
+                            {% if assignment.assignment_name == title.assignment_name%}
+                            <tr>
+                                <td>{{ assignment.student_name }}</td>
+                                <td>{{ assignment.student_id }}</td>
+                                <td>{{ assignment.student_marks }}</td>
+                                <td
+                                    style="background-color: {% if assignment.submission_date == None %}#f7423b{% else %}#05e641{% endif %};">
+                                    {{ assignment.submission_date }}
+                                </td>
+
+
+                                <td>
+                                    {% if assignment.files %}
+                                    <a href="{{ assignment.files.url }}" target="_blank"><button type="button"
+                                            id="view-file-btn">View File</button></a>
+                                    {% else %}
+                                    No File Available
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary" onclick="showAssignmentForm()">Add Assignment</button>
+    <br><br>
+    <div id="assignmentForm" style="display: none;">
+        <form name="assignment" action="{% url 'assignments_page' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="form_name" value="assignment">
+            <input type="text" name="assignment_number" placeholder="Assignment Number">
+            <input type="text" name="assignment_name" placeholder="Assignment Name">
+            <input type="text" name="total_marks" placeholder="Total Marks">
+            <input type="date" name="due_date" placeholder="Due Date">
+            <button type="submit">Create</button>
+        </form>
+    </div>
+
+    <br><br>
+    <a href="{% url 'teacher_home' %}" class="btn btn-primary"><button class="btn btn-primary"> Go Back
+            Home</button></a>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script>
+        function showAssignmentForm() {
+            ele = document.getElementById("assignmentForm")
+            if (ele.style.display == "none")
+                ele.style.display = "block"
+            else if (ele.style.display == "block")
+                ele.style.display = "none"
+        }
+
+        document.querySelectorAll('.expand-button').forEach(button => {
+            button.addEventListener('click', function () {
+                const row = this.closest('.assignment-row').nextElementSibling;
+                row.classList.toggle('hidden-row');
+            });
+        });
+    </script>
+</body>
+
+</html>

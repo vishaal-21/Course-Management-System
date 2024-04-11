@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        body::after {
+            content: "";
+            background-image: url('https://img2.wallspic.com/crops/9/1/8/0/90819/90819-plaza-lawn-university-day-sky-1920x1080.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.7;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: -1;
+        }
+
+        h1 {
+            color: #000000;
+            margin-bottom: 20px;
+            text-shadow: 5px 5px 4px rgb(255, 255, 255)
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            /* Rounded corners */
+            box-shadow: 30px 30px 30px rgba(0, 0, 0, 1);
+            /* Shadow */
+            width: 400px;
+            text-align: center;
+            /* Center align contents */
+        }
+
+        .login-container h2 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .login-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .login-container form input[type="text"],
+        .login-container form input[type="password"],
+        .login-container form select {
+            margin-bottom: 20px;
+            padding: 15px;
+            /* Increased padding */
+            border: none;
+            border-radius: 10px;
+            /* Rounded corners */
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            /* Shadow */
+            transition: box-shadow 0.3s ease;
+            width: 100%;
+            /* Full width */
+        }
+
+        .login-container form input[type="text"]:focus,
+        .login-container form input[type="password"]:focus,
+        .login-container form select:focus {
+            outline: none;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+            /* Increased shadow on focus */
+        }
+
+        .login-container form button {
+            padding: 15px;
+            /* Increased padding */
+            border: none;
+            border-radius: 10px;
+            /* Rounded corners */
+            background-color: #007bff;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            /* Full width */
+        }
+
+        .login-container form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>COURSE MANAGEMENT SYSTEM</h1>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form action="{% url 'login_page' %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username">
+            <input type="password" name="password" placeholder="Password">
+            <button type="submit">Login</button>
+        </form>
+        {{ error }}
+    </div>
+</body>
+
+</html>
