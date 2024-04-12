@@ -13,6 +13,20 @@
             font-size: 18px;
         }
 
+        body::after {
+            content: "";
+            background-image: url('https://static.vecteezy.com/system/resources/previews/013/928/544/original/abstract-white-and-gray-elegant-background-vector.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.65;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: -1;
+        }
+
         #view-file-btn.btn-secondary:hover {
             cursor: not-allowed;
         }
@@ -91,7 +105,7 @@
                             <input type="file" id="submission_file" name="submission_file" accept=".pdf,.doc">
                             <button type="submit" name="submit_button" id="submit-btn"
                                 class="btn btn-primary">Submit</button>
-                            {% if assignment.files.url %}
+                            {% if assignment.files %}
                             <a href="{{assignment.files.url}}" target="_blank"><button
                                     class="{% if assignment.files.url %}btn btn-info{% else %}btn btn-secondary disabled{% endif %}"
                                     type="button" id="view-file-btn">View File</button></a>

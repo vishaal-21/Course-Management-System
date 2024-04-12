@@ -13,6 +13,20 @@
             font-size: 18px;
         }
 
+        body::after {
+            content: "";
+            background-image: url('https://static.vecteezy.com/system/resources/previews/013/928/544/original/abstract-white-and-gray-elegant-background-vector.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.65;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: -1;
+        }
+
         .hidden-row {
             display: none;
         }
@@ -119,7 +133,6 @@
                         </div>
                     </td>
                 </tr>
-                <!-- Hidden row containing details table -->
                 <tr class="hidden-row">
                     <td colspan="6">
                         <table class="details-table">
@@ -142,8 +155,6 @@
                                         style="background-color: {% if assignment.submission_date == None %}#f7423b{% else %}#05e641{% endif %};">
                                         {{ assignment.submission_date }}
                                     </td>
-
-
                                     <td>
                                         {% if assignment.files %}
                                         <a href="{{ assignment.files.url }}" target="_blank"><button type="button"

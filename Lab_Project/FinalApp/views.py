@@ -292,6 +292,9 @@ def student_home(request):
     total_exam_marks=sum(Exam.objects.filter(student_name=student_name,student_id=student_id).values_list('total_marks',flat=True))
     student_exam_marks=sum(Exam.objects.filter(student_name=student_name,student_id=student_id).values_list('student_marks',flat=True))
 
+    request.session['student_name'] = student_name
+    request.session['student_id'] = student_id
+
     return render(request,'student_home.html',{'user':user,'pending_assignments':pending_assignments,'num_pending_assignments':num_pending_assignments,
                                                'tot_classes':present_count+absent_count,'classes_attended':present_count,'present_perc':present_perc,
                                                'absent_perc':absent_perc,'total_assignment_marks':total_assignment_marks,
@@ -302,11 +305,8 @@ def stu_assignments_page(request):
     request.session['student_name'] = request.session.get('student_name')
     request.session['student_id'] = request.session.get('student_id')
 
-    student_name = request.session.get('student_name')
-    student_id = request.session.get('student_id')
-
-    # assignments=Assignment.objects.filter(student_name=student_name,student_id=student_id)
     assignments=Assignment.objects.all()
+    print(assignments[0].files)
     return render(request,'student/assignment.html',{'assignments':assignments})
 
 def stu_grades_page(request):
@@ -323,6 +323,10 @@ def stu_grades_page(request):
     
     total=sum(total_assignment_marks) + sum(total_exam_marks)
     scored=sum(scored_exam_marks) + sum(scored_assignment_marks)
+
+    request.session['student_name'] = student_name
+    request.session['student_id'] = student_id
+
     return render(request,'student/grades.html',{'assignments':assignments,'exams':exams,'total':total,'scored':scored})
 
 def stu_attendance_page(request):
@@ -331,6 +335,7 @@ def stu_attendance_page(request):
 
     attendance=Attendance.objects.filter(student_id=student_id)
     total=len(attendance.values_list('date',flat=True))
+    print(attendance)
     list=attendance.values('date','attended_or_not')
 
     present=0
