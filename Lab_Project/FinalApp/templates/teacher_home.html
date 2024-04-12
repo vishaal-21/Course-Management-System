@@ -67,8 +67,8 @@
         .course-details {
             float: right;
             position: relative;
-            left: 30%;
-            background-color: yellow;
+            left:25%;
+            color: white;
             padding-left: 10px;
             padding-right: 10px;
         }
@@ -112,8 +112,8 @@
         <a href="{% url 'logout_user' %}">Logout</a>
     </div>
 
-    <div class="content" style="display: flex; flex-direction: row; justify-content: center;">
-        <h1 style="position: relative; left: 7%; color: #111111; text-shadow: 0px 5px 5px rgba(0, 0, 0, 0.6);">Teacher Dashboard</h1>
+    <div class="content" style="display: flex; flex-direction: row; justify-content: center; background-color: rgba(0, 0, 0, 0.85); align-items: center;">
+        <h1 style="position: relative; left: 7%; color: #ffffff; text-shadow: 0px 5px 5px rgba(0, 0, 0, 0.6);">Teacher Dashboard</h1>
         <div class="course-details">
             <p><b>Teacher Name :</b> {{ user.teacher }}</p>
             <p><b>Course Name:</b> {{ user.name }}</p>
@@ -124,6 +124,11 @@
 
     <div class="container">
         <a href="{% url 'assignments_page' %}" class="widget" style="background-color: #ffb3b3;">
+            {% if total == 0 %}
+            <div class="alert alert-info">
+                No records to show.
+            </div>
+            {% else %}
             <table class="table table-striped table-danger" style="text-align: center;">
                 <thead>
                     <tr>
@@ -150,10 +155,16 @@
                     {% endfor %}
                 </tbody>
             </table>
+            {% endif %}
             <h5>Total assignments given : {{ total }}</h5>
             <h3>Assignments</h3>
         </a>
         <a href="{% url 'exams_page' %}" class="widget" style="background-color: #d9d3ff;">
+            {% if total_exams == 0 %}
+            <div class="alert alert-info">
+                No records to show.
+            </div>
+            {% else %}
             <table class="table table-striped table-info" style="text-align: center;">
                 <thead>
                     <tr>
@@ -178,6 +189,7 @@
                     {% endfor %}
                 </tbody>
             </table>
+            {% endif %}
             <h5>Total exams : {{ total_exams }}</h5>
             <h3>Exams</h3>
         </a>
@@ -233,49 +245,6 @@
             <h3>Grading</h3>
         </a>
     </div>
-
-    <!-- <div class="button-grid">
-        <a href="{% url 'assignments_page' %}">
-            <div class="image">
-                <img src="https://cdn.pixabay.com/photo/2016/06/01/06/26/open-book-1428428_1280.jpg" alt="Assignments">
-            </div>
-            Assignments
-        </a>
-        <a href="{% url 'exams_page' %}">
-            <div class="image">
-                <img src="https://cdn.pixabay.com/photo/2020/06/01/18/47/math-5247958_1280.jpg" alt="Exams">
-            </div>
-            Exams
-        </a>
-        <a href="{% url 'notifications_page' %}">
-            <div class="image">
-                <img src="https://cdn.pixabay.com/photo/2015/12/16/17/41/bell-1096280_960_720.png" alt="Notifications">
-            </div>
-            Notifications
-        </a>
-        <a href="{% url 'attendance_page' %}">
-            <div class="image">
-                <img src="https://thumbs.dreamstime.com/b/attendance-text-written-education-background-back-to-school-concept-banner-sketch-supplies-pencils-over-classroom-d-157634154.jpg"
-                    alt="Attendance">
-            </div>
-            Attendance
-        </a>
-        <a href="{% url 'grades_page' %}">
-            <div class="image">
-                <img src="https://media.istockphoto.com/id/1143017063/vector/school-grade-results-vector-icons-letters-and-plus-grades-marks-in-red-circle.jpg?s=612x612&w=0&k=20&c=bsycxRXFcTjOIWm1vtd7D30vxtLuW-Zu_RG62HyQD6k="
-                    alt="Grades">
-            </div>
-            Grades
-        </a>
-        <a href="{% url 'study_material_page' %}">
-            <div class="image">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_cUKfjU3OgFYmYEavp1abjDAqI49n5wqvjhabHTatP225MCMSdqNtfmvcpb7ephU5H_U&usqp=CAU"
-                    alt="Study Material">
-            </div>
-            Study Material
-        </a>
-    </div> -->
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>

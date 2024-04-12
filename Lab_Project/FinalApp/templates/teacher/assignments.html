@@ -9,7 +9,6 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         body {
-            margin: 2%;
             font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
             font-size: 18px;
         }
@@ -34,105 +33,152 @@
         .details-table th {
             background-color: #f2f2f2;
         }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .navbar a {
+            float: left;
+            display: flex;
+            color: white;
+            text-align: center;
+            padding: 10px 20px;
+            text-decoration: none;
+        }
+
+        .nav-left {
+            justify-content: flex-start;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+            border-radius: 6px;
+        }
+
+        .logout {
+            float: right;
+        }
+
+        .content{
+            margin: 3%;
+        }
+
+        input{
+            margin: 3px;
+        }
     </style>
 </head>
 
 <body>
-    <h1 align="center">Teacher Assignments Page</h1>
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="{% url 'teacher_home' %}">Home</a>
+            <a href="{% url 'exams_page' %}">Exams</a>
+            <a href="{% url 'grades_page' %}">Grading</a>
+            <a href="{% url 'attendance_page' %}">Attendance</a>
+        </div>
 
-    <table id="Course" class="crud-table table table-striped">
-        <thead>
-            <tr>
-                <th>Number</th>
-                <th>Assignment Name</th>
-                <th>Total Marks</th>
-                <th>Upload Date</th>
-                <th>Due Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for title in assignment_titles %}
-            <tr class="assignment-row">
-                <td>{{ title.assignment_number }}</td>
-                <td>{{ title.assignment_name }}</td>
-                <td>{{ title.total_marks }}</td>
-                <td>{{ title.upload_date }}</td>
-                <td>{{ title.due_date }}</td>
-                <td>
-                    <div style="display: inline-block;">
-                        <form action="{% url 'delete_assignment' title.assignment_number %}" method="post">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </div>
-                    <div style="display: inline-block;">
-                        <button class="expand-button btn btn-primary">Expand</button>
-                    </div>
-                </td>
-            </tr>
-            <!-- Hidden row containing details table -->
-            <tr class="hidden-row">
-                <td colspan="6">
-                    <table class="details-table">
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Student ID</th>
-                                <th>Student Marks</th>
-                                <th>Submission Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for assignment in assignments %}
-                            {% if assignment.assignment_name == title.assignment_name%}
-                            <tr>
-                                <td>{{ assignment.student_name }}</td>
-                                <td>{{ assignment.student_id }}</td>
-                                <td>{{ assignment.student_marks }}</td>
-                                <td
-                                    style="background-color: {% if assignment.submission_date == None %}#f7423b{% else %}#05e641{% endif %};">
-                                    {{ assignment.submission_date }}
-                                </td>
-
-
-                                <td>
-                                    {% if assignment.files %}
-                                    <a href="{{ assignment.files.url }}" target="_blank"><button type="button"
-                                            id="view-file-btn">View File</button></a>
-                                    {% else %}
-                                    No File Available
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <button class="btn btn-primary" onclick="showAssignmentForm()">Add Assignment</button>
-    <br><br>
-    <div id="assignmentForm" style="display: none;">
-        <form name="assignment" action="{% url 'assignments_page' %}" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="form_name" value="assignment">
-            <input type="text" name="assignment_number" placeholder="Assignment Number">
-            <input type="text" name="assignment_name" placeholder="Assignment Name">
-            <input type="text" name="total_marks" placeholder="Total Marks">
-            <input type="date" name="due_date" placeholder="Due Date">
-            <button type="submit">Create</button>
-        </form>
+        <a href="{% url 'logout_user' %}" class="logout">Logout</a>
     </div>
 
-    <br><br>
-    <a href="{% url 'teacher_home' %}" class="btn btn-primary"><button class="btn btn-primary"> Go Back
-            Home</button></a>
+    <h1 align="center">Assignment Upload Dashboard</h1>
 
+    <div class="content">
+        <table id="assignment" class="crud-table table table-striped">
+            <thead>
+                <tr>
+                    <th>Number</th>
+                    <th>Assignment Name</th>
+                    <th>Total Marks</th>
+                    <th>Upload Date</th>
+                    <th>Due Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for title in assignment_titles %}
+                <tr class="assignment-row">
+                    <td>{{ title.assignment_number }}</td>
+                    <td>{{ title.assignment_name }}</td>
+                    <td>{{ title.total_marks }}</td>
+                    <td>{{ title.upload_date }}</td>
+                    <td>{{ title.due_date }}</td>
+                    <td>
+                        <div style="display: inline-block;">
+                            <form action="{% url 'delete_assignment' title.assignment_number %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                        <div style="display: inline-block;">
+                            <button class="expand-button btn btn-primary">Expand</button>
+                        </div>
+                    </td>
+                </tr>
+                <!-- Hidden row containing details table -->
+                <tr class="hidden-row">
+                    <td colspan="6">
+                        <table class="details-table">
+                            <thead>
+                                <tr>
+                                    <th>Student Name</th>
+                                    <th>Student ID</th>
+                                    <th>Student Marks</th>
+                                    <th>Submission Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for assignment in assignments %}
+                                {% if assignment.assignment_name == title.assignment_name%}
+                                <tr>
+                                    <td>{{ assignment.student_name }}</td>
+                                    <td>{{ assignment.student_id }}</td>
+                                    <td>{{ assignment.student_marks }}</td>
+                                    <td
+                                        style="background-color: {% if assignment.submission_date == None %}#f7423b{% else %}#05e641{% endif %};">
+                                        {{ assignment.submission_date }}
+                                    </td>
+
+
+                                    <td>
+                                        {% if assignment.files %}
+                                        <a href="{{ assignment.files.url }}" target="_blank"><button type="button"
+                                                id="view-file-btn">View File</button></a>
+                                        {% else %}
+                                        No File Available
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button class="btn btn-primary" onclick="showAssignmentForm()">Add Assignment</button>
+        <br><br>
+        <div id="assignmentForm" style="display: none;">
+            <form name="assignment" action="{% url 'assignments_page' %}" method="post">
+                {% csrf_token %}
+                Enter new assignment details <br>
+                <input type="hidden" name="form_name" value="assignment">
+                <input type="text" name="assignment_number" placeholder="Assignment Number"> <br>
+                <input type="text" name="assignment_name" placeholder="Assignment Name"> <br>
+                <input type="text" name="total_marks" placeholder="Total Marks"> <br>
+                Due Date <input type="date" name="due_date" placeholder="Due Date"> <br>
+                <button type="submit">Create</button>
+            </form>
+        </div>
+
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

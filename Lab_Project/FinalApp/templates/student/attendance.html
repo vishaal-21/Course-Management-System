@@ -10,43 +10,83 @@
 
     <style>
         body {
-            margin: 2%;
             font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-            font-size: 16px;
+            font-size: 18px;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .navbar a {
+            float: left;
+            display: flex;
+            color: white;
+            text-align: center;
+            padding: 10px 20px;
+            text-decoration: none;
+        }
+
+        .nav-left {
+            justify-content: flex-start;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+            border-radius: 6px;
+        }
+
+        .logout {
+            float: right;
+        }
+
+        .content {
+            margin: 3%;
         }
     </style>
 </head>
 
 <body>
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="{% url 'student_home' %}">Home</a>
+            <a href="{% url 'stu_assignments_page' %}">Assignments</a>
+            <a href="{% url 'stu_grades_page' %}">Grades</a>
+        </div>
+        <a href="{% url 'logout_user' %}" class="logout">Logout</a>
+    </div>
+
     <h1 align="center">Student Attendance</h1>
 
-    <table class="table table-striped">
-        <thead align="center">
-            <tr>
-                <th>Date</th>
-                <th>Attendance</th>
-            </tr>
-        </thead>
-        <tbody align="center">
-            {% for att in attendance %}
-            <tr>
-                <td>{{ att.date }}</td>
-                <td style="background-color: {% if att.attended_or_not %}#05e641{% else %}#f7423b{% endif %};">{% if att.attended_or_not %}Present{% else %}Absent{% endif %}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="content">
+        <table class="table table-striped">
+            <thead align="center">
+                <tr>
+                    <th>Date</th>
+                    <th>Attendance</th>
+                </tr>
+            </thead>
+            <tbody align="center">
+                {% for att in attendance %}
+                <tr>
+                    <td>{{ att.date }}</td>
+                    <td style="background-color: {% if att.attended_or_not %}#05e641{% else %}#f7423b{% endif %};">{% if att.attended_or_not %}Present{% else %}Absent{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <div style="display:flex; flex-direction: row; justify-content: space-between;padding: 10px;">
-        <h5>Total Number of classes : </h5>
-        <h5>Classes Taken : {{ total }}</h5>
-        <h5>Classes attended : {{ present }}</h5>
-        <div style="background-color: {% if percentage < 75 %}#f7423b{% else %}#05e641{% endif %};">
-            <h5>Attendance : {{ percentage }} %</h5>
+        <div style="display:flex; flex-direction: row; justify-content: space-between;padding: 10px;">
+            <h5>Classes Taken : {{ total }}</h5>
+            <h5>Classes attended : {{ present }}</h5>
+            <div style="background-color: {% if percentage < 75 %}#f7423b{% else %}#05e641{% endif %};">
+                <h5>Attendance : {{ percentage }} %</h5>
+            </div>
         </div>
     </div>
-    <a href="{% url 'student_home' %}" class="btn btn-primary"><button class="btn btn-primary"> Go Back
-            Home</button></a>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
         </script>

@@ -275,14 +275,37 @@ def delete_exam(request, exam_name):
     return redirect('exams_page')
 
 def student_home(request):
-    request.session['student_name'] = request.session.get('username')
-    request.session['student_id'] = request.session.get('password')
-    return render(request,'student_home.html')
+    student_name = request.session.get('username')
+    student_id = request.session.get('password')
+
+    user=UsersAll.objects.get(name=student_name,user_id=student_id)
+    pending_assignments=Assignment.objects.filter(student_name=student_name,student_id=student_id,submission_date__isnull=True)
+    num_pending_assignments=len(pending_assignments)
+
+    present_count=Attendance.objects.filter(student_name=student_name,student_id=student_id,attended_or_not=True).count()
+    absent_count=Attendance.objects.filter(student_name=student_name,student_id=student_id,attended_or_not=False).count()
+    present_perc=round((present_count/(present_count+absent_count))*100,0)
+    absent_perc=round((absent_count/(present_count+absent_count))*100,0)
+
+    total_assignment_marks=sum(Assignment.objects.filter(student_name=student_name,student_id=student_id).values_list('total_marks',flat=True))
+    student_assignment_marks=sum(Assignment.objects.filter(student_name=student_name,student_id=student_id).values_list('student_marks',flat=True))
+    total_exam_marks=sum(Exam.objects.filter(student_name=student_name,student_id=student_id).values_list('total_marks',flat=True))
+    student_exam_marks=sum(Exam.objects.filter(student_name=student_name,student_id=student_id).values_list('student_marks',flat=True))
+
+    return render(request,'student_home.html',{'user':user,'pending_assignments':pending_assignments,'num_pending_assignments':num_pending_assignments,
+                                               'tot_classes':present_count+absent_count,'classes_attended':present_count,'present_perc':present_perc,
+                                               'absent_perc':absent_perc,'total_assignment_marks':total_assignment_marks,
+                                               'student_assignment_marks':student_assignment_marks,'total_exam_marks':total_exam_marks,
+                                               'student_exam_marks':student_exam_marks})
 
 def stu_assignments_page(request):
     request.session['student_name'] = request.session.get('student_name')
     request.session['student_id'] = request.session.get('student_id')
 
+    student_name = request.session.get('student_name')
+    student_id = request.session.get('student_id')
+
+    # assignments=Assignment.objects.filter(student_name=student_name,student_id=student_id)
     assignments=Assignment.objects.all()
     return render(request,'student/assignment.html',{'assignments':assignments})
 
@@ -316,8 +339,10 @@ def stu_attendance_page(request):
         for key,value in dict.items():
             if key=='attended_or_not' and value:
                 present+=1
-
-    percentage=round(present/total*100,2)
+    if total!=0:
+        percentage=round((present/total)*100,2)
+    else:
+        percentage=0
 
     return render(request,'student/attendance.html',{'attendance':attendance,"present":present,'total':total,'percentage':percentage})
 
